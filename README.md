@@ -36,3 +36,74 @@ AWS S3 Bucket (Image Storage)
 ---
 
 ## 📂 Project Structure
+project/
+├── server.js
+├── index.html
+├── package.json
+├── .gitignore
+├── README.md
+└── .github/workflows/ci.yml
+
+
+---
+
+## 🔌 API Endpoint
+
+### POST /upload
+
+Upload an image using:
+
+- Content-Type: multipart/form-data
+- Key: `image`
+
+### Response:
+```json
+{
+  "url": "https://bucket-name.s3.amazonaws.com/image.jpg"
+}
+🛡️ Validation
+Only image files allowed (JPG/PNG)
+Max file size: 2MB
+☁️ AWS S3 Setup
+Create S3 bucket
+Add bucket policy for access
+Add credentials in .env
+🔄 Running Multiple Servers
+
+Open 2 terminals:
+
+PORT=3001 node server.js
+PORT=3002 node server.js
+⚖️ NGINX Configuration
+http {
+    upstream backend {
+        server 127.0.0.1:3001;
+        server 127.0.0.1:3002;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}
+🧪 Testing
+
+Use:
+
+Browser UI → http://localhost
+Postman / curl
+
+Verify:
+
+Image uploads to S3
+Requests hit different servers (check logs)
+🔁 CI Pipeline
+
+GitHub Actions workflow:
+
+Runs on push & pull request
+Installs dependencies
+Ensures project builds successfully
